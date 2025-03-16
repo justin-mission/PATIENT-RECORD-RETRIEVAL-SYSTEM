@@ -18,6 +18,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  register: (username: string, password: string, fullName: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -109,6 +110,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     await logoutMutation.mutateAsync();
   };
+  
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: async ({ username, password, fullName }: { username: string; password: string; fullName: string }) => {
+      const res = await apiRequest("POST", "/api/auth/register", { username, password, fullName });
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Registration successful",
+        description: "Your account has been created. You can now log in.",
+      });
+      navigate("/login");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Registration failed",
+        description: error.message || "Failed to create account",
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const register = async (username: string, password: string, fullName: string) => {
+    await registerMutation.mutateAsync({ username, password, fullName });
+  };
 
   return (
     <AuthContext.Provider 
@@ -116,7 +143,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user, 
         isLoading, 
         login, 
-        logout 
+        logout,
+        register
       }}
     >
       {children}

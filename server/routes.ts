@@ -81,6 +81,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   // Authentication routes
+  // Register new user
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { username, password, fullName, role = "Staff" } = req.body;
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      // Create the new user
+      const newUser = await storage.createUser({
+        username,
+        password: hashedPassword,
+        fullName,
+        role
+      });
+      
+      // Log the registration activity
+      await storage.createActivityLog({
+        userId: newUser.id,
+        action: "Register",
+        details: "New user registered",
+        ipAddress: "127.0.0.1",
+      });
+      
+      res.status(201).json({ 
+        id: newUser.id,
+        username: newUser.username,
+        fullName: newUser.fullName,
+        role: newUser.role
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error registering user" });
+    }
+  });
+
   app.post("/api/auth/login", (req, res, next) => {
     passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) {
