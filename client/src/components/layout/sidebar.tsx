@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -14,10 +15,10 @@ import {
   Users, 
   UserPlus, 
   History, 
-  Settings, 
   LogOut,
   Menu, 
-  X
+  X,
+  User
 } from "lucide-react";
 import { useState } from "react";
 
@@ -54,11 +55,6 @@ export function Sidebar({ className }: SidebarProps) {
       title: "Activity Log",
       icon: <History className="h-5 w-5" />,
       href: "/activity-log",
-    },
-    {
-      title: "Settings",
-      icon: <Settings className="h-5 w-5" />,
-      href: "/settings",
     },
   ];
 
@@ -105,7 +101,24 @@ export function Sidebar({ className }: SidebarProps) {
         </TooltipProvider>
       </div>
       
-      <div className="absolute bottom-4 left-0 right-0 px-4">
+      <div className="absolute bottom-4 left-0 right-0 px-4 space-y-2">
+        {user && (
+          <div className="p-3 rounded-lg bg-slate-800 flex items-center mb-2">
+            <Avatar className="h-10 w-10 border-2 border-primary">
+              {user.profilePicture ? (
+                <AvatarImage src={user.profilePicture} alt={user.fullName} />
+              ) : (
+                <AvatarFallback className="bg-slate-700 text-white">
+                  <User className="h-5 w-5" />
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="ml-3 overflow-hidden">
+              <p className="text-sm font-medium text-white truncate">{user.fullName}</p>
+              <p className="text-xs text-slate-400 truncate capitalize">{user.role}</p>
+            </div>
+          </div>
+        )}
         <Button
           variant="ghost"
           size="lg"
