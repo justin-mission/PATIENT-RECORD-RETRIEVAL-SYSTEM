@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { useLocation } from "wouter";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -28,6 +29,7 @@ export function LoginForm() {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [_, navigate] = useLocation();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -121,10 +123,19 @@ export function LoginForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex flex-col justify-center space-y-4">
         <p className="text-xs text-center text-slate-500">
           For demo, use username: <span className="font-semibold">admin</span> and password: <span className="font-semibold">admin123</span>
         </p>
+        <div className="text-center">
+          <Button
+            variant="link"
+            onClick={() => navigate("/register")}
+            className="text-primary"
+          >
+            Don't have an account? Sign up
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -40,20 +40,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw error;
       }
     },
-    onSuccess: (data) => {
-      setUser(data);
-      if (location === "/login") {
-        navigate("/dashboard");
-      }
-    },
-    onError: () => {
-      setUser(null);
-      if (location !== "/login") {
-        navigate("/login");
-      }
-    },
-    retry: false,
+    retry: false
   });
+  
+  // Handle user authentication state changes
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/user");
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+          if (location === "/login" || location === "/register") {
+            navigate("/dashboard");
+          }
+        } else {
+          setUser(null);
+          if (location !== "/login" && location !== "/register") {
+            navigate("/login");
+          }
+        }
+      } catch (error) {
+        setUser(null);
+        if (location !== "/login" && location !== "/register") {
+          navigate("/login");
+        }
+      }
+    };
+    
+    fetchUser();
+  }, [location, navigate]);
 
   // Login mutation
   const loginMutation = useMutation({
