@@ -8,7 +8,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Palitan ang '/pangalan-ng-repo/' ng pangalan ng GitHub repo mo
+const repoName = "patient-record-retrieval-system";
+
 export default defineConfig({
+  base: `/${repoName}/`, // ✅ Important for GitHub Pages
   plugins: [
     react(),
     runtimeErrorOverlay(),
