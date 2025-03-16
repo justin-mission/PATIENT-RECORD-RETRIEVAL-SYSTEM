@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { useLocation, useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
@@ -30,6 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is already authenticated
   const { isLoading } = useQuery({
     queryKey: ["/api/auth/user"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/auth/user");
+        if (!res.ok) throw new Error("Not authenticated");
+        return res.json();
+      } catch (error) {
+        throw error;
+      }
+    },
     onSuccess: (data) => {
       setUser(data);
       if (location === "/login") {
@@ -102,12 +111,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        logout,
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        isLoading, 
+        login, 
+        logout 
       }}
     >
       {children}

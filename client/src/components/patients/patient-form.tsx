@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import {
   Form,
   FormControl,
@@ -54,7 +54,7 @@ interface PatientFormProps {
 
 export function PatientForm({ defaultValues, isEdit = false, patientId }: PatientFormProps) {
   const { toast } = useToast();
-  const [_, navigate] = useNavigate();
+  const [_, navigate] = useLocation();
   const [imagePreview, setImagePreview] = useState<string | null>(defaultValues?.profilePicture || null);
 
   const form = useForm<PatientFormValues>({
