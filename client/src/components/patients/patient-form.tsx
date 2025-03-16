@@ -286,7 +286,8 @@ export function PatientForm({ defaultValues, isEdit = false, patientId }: Patien
                       <FormLabel>Gender</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field.value || undefined}
+                        defaultValue="Male"
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -346,7 +347,8 @@ export function PatientForm({ defaultValues, isEdit = false, patientId }: Patien
                       <FormLabel>Barangay</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field.value || undefined}
+                        defaultValue="191"
                       >
                         <FormControl>
                           <SelectTrigger>

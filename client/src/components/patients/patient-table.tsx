@@ -52,8 +52,8 @@ interface Patient {
 export function PatientTable() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [barangay, setBarangay] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const [barangay, setBarangay] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [viewPatient, setViewPatient] = useState<Patient | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -66,8 +66,8 @@ export function PatientTable() {
       const params = new URLSearchParams();
       
       if (searchQuery) params.append("search", searchQuery);
-      if (barangay) params.append("barangay", barangay);
-      if (dateFilter) params.append("dateFilter", dateFilter);
+      if (barangay && barangay !== "all") params.append("barangay", barangay);
+      if (dateFilter && dateFilter !== "all") params.append("dateFilter", dateFilter);
       
       if (params.toString()) url += `?${params.toString()}`;
       
@@ -226,7 +226,7 @@ export function PatientTable() {
             <SelectValue placeholder="Filter by Barangay" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Barangays</SelectItem>
+            <SelectItem value="all">All Barangays</SelectItem>
             {["191", "192", "193", "194", "195", "196", "197", "198", "199", "200"].map((b) => (
               <SelectItem key={b} value={b}>
                 Barangay {b}
@@ -243,7 +243,7 @@ export function PatientTable() {
             <SelectValue placeholder="Filter by Date" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Dates</SelectItem>
+            <SelectItem value="all">All Dates</SelectItem>
             <SelectItem value="7days">Last 7 days</SelectItem>
             <SelectItem value="30days">Last 30 days</SelectItem>
             <SelectItem value="90days">Last 90 days</SelectItem>
