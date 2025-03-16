@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, Calendar, Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Search, Calendar, Eye, Edit, Trash2, MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { format } from "date-fns";
 
 interface Patient {
@@ -54,6 +54,7 @@ export function PatientTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [barangay, setBarangay] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [viewPatient, setViewPatient] = useState<Patient | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
@@ -191,9 +192,22 @@ export function PatientTable() {
     },
   ];
 
+  // Sort patients alphabetically
+  const sortedPatients = [...patients].sort((a, b) => {
+    const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+    const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+    return sortOrder === "asc" 
+      ? nameA.localeCompare(nameB) 
+      : nameB.localeCompare(nameA);
+  });
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="relative">
           <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -236,6 +250,15 @@ export function PatientTable() {
             <SelectItem value="thisYear">This year</SelectItem>
           </SelectContent>
         </Select>
+
+        <Button 
+          variant="outline" 
+          onClick={toggleSortOrder}
+          className="flex items-center justify-center gap-2"
+        >
+          <span>Sort: {sortOrder === "asc" ? "A to Z" : "Z to A"}</span>
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
       </div>
 
       {isLoading ? (
@@ -247,7 +270,7 @@ export function PatientTable() {
         </div>
       ) : (
         <DataTable
-          data={patients}
+          data={sortedPatients}
           columns={columns}
         />
       )}
