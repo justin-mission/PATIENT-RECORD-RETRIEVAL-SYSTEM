@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { 
@@ -77,29 +78,31 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
       
       <div className="space-y-1 py-2">
-        {sidebarItems.map((item) => (
-          <Tooltip key={item.href}>
-            <TooltipTrigger asChild>
-              <Link href={item.href}>
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  className={cn(
-                    "w-full justify-start items-center px-4 py-2",
-                    location === item.href
-                      ? "bg-primary text-white"
-                      : "text-slate-300 hover:text-white hover:bg-slate-800"
-                  )}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.icon}
-                  <span className="ml-3">{item.title}</span>
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">{item.title}</TooltipContent>
-          </Tooltip>
-        ))}
+        <TooltipProvider>
+          {sidebarItems.map((item) => (
+            <Tooltip key={item.href}>
+              <TooltipTrigger asChild>
+                <Link href={item.href}>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className={cn(
+                      "w-full justify-start items-center px-4 py-2",
+                      location === item.href
+                        ? "bg-primary text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    )}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.icon}
+                    <span className="ml-3">{item.title}</span>
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">{item.title}</TooltipContent>
+            </Tooltip>
+          ))}
+        </TooltipProvider>
       </div>
       
       <div className="absolute bottom-4 left-0 right-0 px-4">
